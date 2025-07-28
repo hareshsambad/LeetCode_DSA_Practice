@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Calculator</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7fa;
+        color: #333;
+        transition: all 0.3s;
+      }
+      .dark-mode {
+        background-color: #1e1e1e;
+        color: #f4f4f4;
+      }
+      header {
+        background: linear-gradient(90deg, #0066ff, #00ccff);
+        color: white;
+        padding: 1rem;
+        text-align: center;
+      }
+      .container {
+        padding: 20px;
+        max-width: 500px;
+        margin: auto;
+      }
+      .btn-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #0066ff;
+        color: white;
+        transition: background-color 0.2s;
+      }
+      button:hover {
+        background-color: #0052cc;
+      }
+      .section {
+        display: none;
+      }
+      .visible {
+        display: block;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        margin: 5px 0 15px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      .result {
+        font-weight: bold;
+        margin-top: 10px;
+      }
+      .toggle-theme {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: #444;
+        color: #fff;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="toggle-theme" onclick="toggleTheme()">🌙</button>
+    <header>
+      <h1>Smart Calculator</h1>
+    </header>
+    <div class="container">
+      <div class="btn-group">
+        <button onclick="showSection('simple')">Simple</button>
+        <button onclick="showSection('tax')">Tax</button>
+        <button onclick="showSection('sci')">Scientific</button>
+      </div>
+
+      <!-- Simple Calculator -->
+      <div id="simple" class="section visible">
+        <h2>Simple Calculator</h2>
+        <input type="number" id="simple1" placeholder="Enter first number" />
+        <select id="simpleOp">
+          <option value="+">+</option>
+          <option value="-">-</option>
+          <option value="*">*</option>
+          <option value="/">/</option>
+        </select>
+        <input type="number" id="simple2" placeholder="Enter second number" />
+        <button onclick="calcSimple()">Calculate</button>
+        <p class="result" id="simpleResult"></p>
+      </div>
+
+      <!-- Tax Calculator -->
+      <div id="tax" class="section">
+        <h2>Tax Calculator</h2>
+        <input type="number" id="taxAmount" placeholder="Enter amount" />
+        <button onclick="calcTax()">Calculate Tax</button>
+        <p class="result" id="taxResult"></p>
+      </div>
+
+      <!-- Scientific Calculator -->
+      <div id="sci" class="section">
+        <h2>Scientific Calculator</h2>
+        <input type="number" id="sciInput" placeholder="Enter number" />
+        <select id="sciOp">
+          <option value="sqrt">√ Square Root</option>
+          <option value="square">x² Square</option>
+          <option value="cube">x³ Cube</option>
+          <option value="log">Log</option>
+          <option value="exp">e^x</option>
+          <option value="sin">sin</option>
+          <option value="cos">cos</option>
+          <option value="tan">tan</option>
+        </select>
+        <button onclick="calcSci()">Calculate</button>
+        <p class="result" id="sciResult"></p>
+      </div>
+    </div>
+
+    <script>
+      function showSection(id) {
+        document
+          .querySelectorAll(".section")
+          .forEach((sec) => sec.classList.remove("visible"));
+        document.getElementById(id).classList.add("visible");
+      }
+
+      function calcSimple() {
+        const a = parseFloat(document.getElementById("simple1").value);
+        const b = parseFloat(document.getElementById("simple2").value);
+        const op = document.getElementById("simpleOp").value;
+        let result = 0;
+        if (op === "+") result = a + b;
+        else if (op === "-") result = a - b;
+        else if (op === "*") result = a * b;
+        else if (op === "/") result = b !== 0 ? a / b : "Cannot divide by 0";
+        document.getElementById("simpleResult").innerText = "Result: " + result;
+      }
+
+      function calcTax() {
+        const amount = parseFloat(document.getElementById("taxAmount").value);
+        let tax = 0;
+        if (amount > 50000) tax = 18;
+        else if (amount > 10000) tax = 12;
+        else if (amount > 5000) tax = 5;
+        const finalAmt = amount + (amount * tax) / 100;
+        document.getElementById("taxResult").innerText =
+          "Total with Tax: ₹" + finalAmt.toFixed(2);
+      }
+
+      function calcSci() {
+        const num = parseFloat(document.getElementById("sciInput").value);
+        const op = document.getElementById("sciOp").value;
+        let result = 0;
+        switch (op) {
+          case "sqrt":
+            result = Math.sqrt(num);
+            break;
+          case "square":
+            result = num * num;
+            break;
+          case "cube":
+            result = num ** 3;
+            break;
+          case "log":
+            result = Math.log10(num);
+            break;
+          case "exp":
+            result = Math.exp(num);
+            break;
+          case "sin":
+            result = Math.sin(num);
+            break;
+          case "cos":
+            result = Math.cos(num);
+            break;
+          case "tan":
+            result = Math.tan(num);
+            break;
+        }
+        document.getElementById("sciResult").innerText =
+          "Result: " + result.toFixed(4);
+      }
+
+      function toggleTheme() {
+        document.body.classList.toggle("dark-mode");
+      }
+    </script>
+  </body>
+</html>
